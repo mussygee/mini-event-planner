@@ -1,64 +1,101 @@
-# Event Planner Mini
+# Event Planner Mini System (Java)
 
-This project demonstrates practical use of data structures:
-linked lists, stacks, queues, maps, trees, sorting, and searching.
+A Java-based event planning system that demonstrates practical use of core data structures and algorithms to manage guests, venues, seating arrangements, and event tasks. The project emphasizes clean design, efficiency analysis, and real-world problem modeling. 
 
-## What You Must Do
-- Implement all TODO methods
-- Write JUnit 5 tests for core logic
-- Pass instructor autograding tests
-- Explain your design choices in this README
+## Project Overview
+This project simulates key components of an event planning workflow:
+- Managing and searching guest lists efficiently
+- Selecting optimal venues based on constraints
+- Assigning guests to tables using grouping and ordering logic
+- Tracking preparation tasks with undo functionality
+The system is designed to showcase data-structure selection tradeoffs, algorithmic complexity, and modular object-oriented design in Java. 
 
-See Canvas assignment for full requirements.
-
-## Data Structures & Algorithms Used
+## Data Structures & Design Decisions
 
 ### GuestListManager
-- **LinkedList<Guest> (master guest list / source of truth):**
-  Stores all invited guests. This is the authoritative list used to derive other views (like seating).
-- **HashMap<String, Guest> (fast lookup):**
-  Maps guest name → Guest for quick `findGuest`, and to keep add/remove consistent.
+Purpose: Manage invited guests with fast lookup and consistent state.
 
-**Complexity**
-- Finding a guest: **O(1)** average (HashMap lookup), **O(n)** worst-case in pathological hashing.
-- Adding a guest: **O(1)** average (append to LinkedList + put in HashMap).
-- Removing a guest: **O(n)** because removing from LinkedList by object requires a scan (map removal is O(1) average).
+**Data Structures Used:**
+- **LinkedList<Guest>** - maintains the authoritative list of guests
+- **HashMap<String, Guest>** - enables fast lookup by guest name
+
+**Why this design?**
+- The linked list preserves insertion order and serves as a single source of truth.
+- The hash map enables constant-time average lookup without scanning the list.
+
+**Time Complexity**
+- Finding a guest: **O(1)** average
+- Adding a guest: **O(1)** average
+- Removing a guest: **O(n)** (linked list removal requires traversal)
 
 ### VenueSelector
-- **Filtering + Sorting (Comparator):**
-  We filter venues that fit `(cost <= budget && capacity >= guestCount)` and then sort by:
-    1) lowest cost
-    2) if tie, smallest capacity that still fits
+Purpose: Choose the best venue that fits budget and capacity constraints.
+**Approach:**
+1. Filter venues that satisfy:
+   - cost <= budget
+   - capacity >= guest count
+2. Sort remaining venues by:
+   - Lowest cost
+   - Smallest sufficient capacity (tie-breaker)
 
 **Algorithms**
-- Sorting: Java's built-in sort (comparison-based).
+- Filtering
+- Comparator-based sorting (Java built-in sort)
 
-**Complexity**
-- Selecting a venue: **O(m log m)** where m = number of valid venues (filter O(n), sort O(m log m)).
+**Time Complexity**
+- Filtering: O(n)
+- Sorting valid venues: O(m log m)
+  (m = number of valid venues)
 
 ### SeatingPlanner
-- **HashMap<String, Queue<Guest>> groups:**
-  Group guests by `groupTag` and keep FIFO ordering inside each group.
-- **Queue (LinkedList as Queue):**
-  Ensures fair seating order within each group.
-- **Binary Search Tree (custom TableNode BST):**
-  Stores tables keyed by table number; inorder traversal outputs tables in ascending order.
+Purpose: Assign guests to tables while preserving group order and table order. 
 
-**Complexity**
+**Data Structures Used:**
+- **HashMap<String, Queue<Guest>> groups** - group guests by `groupTag` with FIFO ordering
+- **Queue (LinkedList as Queue)** - ensures fair seating within groups
+- **Custom Binary Search Tree (TableNode)** - stores tables by table number
+
+**Why this design?**
+- Queues preserve arrival within each group.
+- The BST enables sorting output of tables without aditional sorting. 
+
+**Time Complexity**
 - Grouping guests: **O(n)**
-- Seating guests into tables: **O(n)**
-- BST inserts: **O(t log t)** average, where t = number of tables used (worst-case O(t^2) if unbalanced)
-- Generating seating overall: **O(n + t log t)** average
+- Seating guests: **O(n)**
+- Table insertin (BST): **O(t log t)** average
+- Overall: **O(n + t log t)** average
 
 ### TaskManager
-- **Queue<Task> upcoming (FIFO):**
-  Upcoming preparation tasks executed in order.
-- **Stack<Task> completed (LIFO undo):**
-  Completed tasks stored so the last executed task can be undone.
+Purpose: Track event preparations tasks with undo capability. 
 
-**Complexity**
+**Data Structures Used:**
+- **Queue<Task> upcoming (FIFO)** - upcoming tasks (FIFO execution)
+- **Stack<Task> completed (LIFO undo)** - completed tasks (LIFO undo)
+
+**Why this design?** 
+- Queues naturally model task execution order.
+- Stacks efficiently support undoing the most recent action.
+
+**Time Complexity**
 - Add task: **O(1)**
-- Execute next task: **O(1)**
-- Undo last task: **O(1)**
+- Execute task: **O(1)**
+- Undo task: **O(1)**
 
+
+## Technologies Used
+- Java
+- Object-Oriented Design
+- Java Collections Framework
+- Custom Data Structures
+- Algorithmic Complexity Analysis
+
+## Notes
+This project was originally developed as part of an academic data structures curriculum and later refactored and documented for portfolio presentation.
+
+## Why This Project Matters
+- This project demonstrates:
+- Strong understanding of data structures & algorithms
+- Ability to justify design decisions
+- Clean separation of concerns
+- Real-world problem modeling in Java
 
