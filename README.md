@@ -57,12 +57,12 @@ Purpose: Assign guests to tables while preserving group order and table order.
 
 **Why this design?**
 - Queues preserve arrival within each group.
-- The BST enables sorting output of tables without aditional sorting. 
+- The BST enables sorting output of tables without additional sorting. 
 
 **Time Complexity**
 - Grouping guests: **O(n)**
 - Seating guests: **O(n)**
-- Table insertin (BST): **O(t log t)** average
+- Table insertion (BST): **O(t log t)** average
 - Overall: **O(n + t log t)** average
 
 ### TaskManager
